@@ -279,5 +279,6 @@ namespace AssetGenerator
         Mesh_NoPosition = 22,
         Animation_SamplerType = 23,
         Instancing = 24,
+        Buffer_Misc = 25,
     }
 }

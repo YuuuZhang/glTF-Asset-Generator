@@ -86,7 +86,12 @@ namespace AssetGenerator.Conversion
         private BinaryData GetBinaryData(BinaryDataType type)
         {
             var binaryData = this.getBinaryData(type);
-            if (!binaryDataToBufferIndex.ContainsKey(binaryData))
+            if (type == BinaryDataType.Animation )
+            {
+                binaryData = new BinaryData(binaryData.AnimationName);
+            }
+
+            if ((!binaryDataToBufferIndex.ContainsKey(binaryData)))
             {
                 var buffer = CreateInstance<Schema.Buffer>();
                 buffer.Uri = binaryData.Name;

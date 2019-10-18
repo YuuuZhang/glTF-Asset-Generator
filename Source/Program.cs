@@ -57,6 +57,7 @@ namespace AssetGenerator
                 new Texture_Sampler(imageList),
                 new Animation_SamplerType(imageList),
                 new Instancing(imageList),
+                new Buffer_Misc(imageList),                
             };
             var negativeTests = new List<ModelGroup>
             {
@@ -128,7 +129,7 @@ namespace AssetGenerator
                     var model = modelGroup.Models[comboIndex];
                     var filename = $"{modelGroup.Id}_{comboIndex:00}.gltf";
 
-                    using (var binaryData = new BinaryData($"{modelGroup.Id}_{comboIndex:00}.bin"))
+                    using (var binaryData = new BinaryData($"{modelGroup.Id}_{comboIndex:00}.bin", $"{modelGroup.Id}_animate_{comboIndex:00}.bin"))
                     {
                         // Pass the desired properties to the runtime layer, which then coverts that data into
                         // a gltf loader object, ready to create the model.
@@ -144,7 +145,9 @@ namespace AssetGenerator
 
                         // Create the .bin file and writes the model's data to it.
                         string dataFile = Path.Combine(modelGroupFolder, binaryData.Name);
+                        string animateDataFile = Path.Combine(modelGroupFolder, binaryData.AnimationName);
                         File.WriteAllBytes(dataFile, binaryData.Bytes);
+                        File.WriteAllBytes(animateDataFile, binaryData.Bytes);
                     }
 
                     readme.SetupTable(modelGroup, comboIndex, model, Path.GetFileName(savePath));
