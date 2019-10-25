@@ -101,6 +101,7 @@ namespace AssetGenerator.ModelGroups
                     Properties = properties,
                     GLTF = gltf,
                     Animated = true,
+                    Individual = true,
                 };
             }
             void SetUvTypeFloat(List<Property> properties, Runtime.MeshPrimitive meshPrimitive)

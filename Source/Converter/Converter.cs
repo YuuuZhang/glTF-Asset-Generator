@@ -57,7 +57,7 @@ namespace AssetGenerator.Conversion
             }
         }
 
-        public Converter(Func<BinaryDataType, BinaryData> getBinaryData, Func<Type, object> createInstance = null)
+        public Converter(bool individual, Func<BinaryDataType, BinaryData> getBinaryData, Func<Type, object> createInstance = null)
         {
             this.getBinaryData = getBinaryData;
             this.createInstance = createInstance;
@@ -86,12 +86,7 @@ namespace AssetGenerator.Conversion
         private BinaryData GetBinaryData(BinaryDataType type)
         {
             var binaryData = this.getBinaryData(type);
-            if (type == BinaryDataType.Animation )
-            {
-                binaryData = new BinaryData(binaryData.AnimationName);
-            }
-
-            if ((!binaryDataToBufferIndex.ContainsKey(binaryData)))
+            if (!binaryDataToBufferIndex.ContainsKey(binaryData))
             {
                 var buffer = CreateInstance<Schema.Buffer>();
                 buffer.Uri = binaryData.Name;

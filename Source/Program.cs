@@ -128,26 +128,29 @@ namespace AssetGenerator
                 {
                     var model = modelGroup.Models[comboIndex];
                     var filename = $"{modelGroup.Id}_{comboIndex:00}.gltf";
+                    var binaryData = modelGroup.CreateBinaryData(model.Individual, modelGroup.Id, comboIndex);
 
-                    using (var binaryData = new BinaryData($"{modelGroup.Id}_{comboIndex:00}.bin", $"{modelGroup.Id}_animate_{comboIndex:00}.bin"))
-                    {
-                        // Pass the desired properties to the runtime layer, which then coverts that data into
-                        // a gltf loader object, ready to create the model.
-                        var converter = new Converter(type => binaryData, model.CreateSchemaInstance);
-                        glTFLoader.Schema.Gltf gltf = converter.Convert(model.GLTF);
-
-                        // Makes last second changes to the model that bypass the runtime layer.
-                        model.PostRuntimeChanges?.Invoke(gltf);
-
-                        // Create the .gltf file and writes the model's data to it.
-                        string assetFile = Path.Combine(modelGroupFolder, filename);
-                        glTFLoader.Interface.SaveModel(gltf, assetFile);
-
-                        // Create the .bin file and writes the model's data to it.
-                        string dataFile = Path.Combine(modelGroupFolder, binaryData.Name);
-                        string animateDataFile = Path.Combine(modelGroupFolder, binaryData.AnimationName);
-                        File.WriteAllBytes(dataFile, binaryData.Bytes);
-                        File.WriteAllBytes(animateDataFile, binaryData.Bytes);
+                    // Pass the desired properties to the runtime layer, which then coverts that data into
+                    // a gltf loader object, ready to create the model.                    
+                    var converter = new Converter(model.Individual, type => binaryData[type], model.CreateSchemaInstance);
+                    glTFLoader.Schema.Gltf gltf = converter.Convert(model.GLTF);
+                    
+                    // Makes last second changes to the model that bypass the runtime layer.
+                    model.PostRuntimeChanges?.Invoke(gltf);
+                    
+                    // Create the .gltf file and writes the model's data to it.
+                    string assetFile = Path.Combine(modelGroupFolder, filename);
+                    glTFLoader.Interface.SaveModel(gltf, assetFile);
+                    
+                    // Create the .bin file and writes the model's data to it.
+                    foreach (BinaryDataType binaryDataType in Enum.GetValues(typeof(BinaryDataType)))
+                    {                                               
+                        if (!(binaryData[binaryDataType].Bytes.Length == 0))
+                        {
+                            string binaryDataFile = Path.Combine(modelGroupFolder, binaryData[binaryDataType].Name);
+                            File.WriteAllBytes(binaryDataFile, binaryData[binaryDataType].Bytes); 
+                            binaryData[binaryDataType].Dispose();
+                        }
                     }
 
                     readme.SetupTable(modelGroup, comboIndex, model, Path.GetFileName(savePath));

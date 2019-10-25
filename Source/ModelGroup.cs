@@ -1,4 +1,5 @@
-﻿using AssetGenerator.Runtime;
+﻿using AssetGenerator.Conversion;
+using AssetGenerator.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace AssetGenerator
         public List<Runtime.Image> UsedTextures { get; private set; }
         public List<Runtime.Image> UsedFigures { get; private set; }
         public bool NoSampleImages { get; protected set; }
-
+        
         protected ModelGroup()
         {
             CommonProperties = new List<Property>();
@@ -232,6 +233,31 @@ namespace AssetGenerator
                 properties.Sort((x, y) => x.Name.CompareTo(y.Name));
             }
         }
+
+        /// <summary>
+        ///  Cteate glTF binary data
+        /// </summary>
+        /// <returns> binary data files </returns>
+        internal Dictionary<BinaryDataType, BinaryData> CreateBinaryData(bool individual, ModelGroupId modelGroupId, int comboIndex)
+        {
+            var binaryDataFiles = new Dictionary<BinaryDataType, BinaryData>{};
+            var binaryDataMesh = new BinaryData(($"{modelGroupId}_{comboIndex:00}.bin"));
+            if (!individual)
+            {
+                binaryDataFiles.Add(BinaryDataType.Mesh, binaryDataMesh);
+                binaryDataFiles.Add(BinaryDataType.Animation, binaryDataMesh);
+                binaryDataFiles.Add(BinaryDataType.Skin, binaryDataMesh);
+            }
+            else
+            {             
+                var binaryDataAnimation = new BinaryData(($"{modelGroupId}_Animation_{comboIndex:00}.bin"));
+                var binaryDataSkin = new BinaryData(($"{modelGroupId}_Skin_{comboIndex:00}.bin"));
+                binaryDataFiles.Add(BinaryDataType.Animation, binaryDataAnimation);            
+                binaryDataFiles.Add(BinaryDataType.Mesh, binaryDataMesh);            
+                binaryDataFiles.Add(BinaryDataType.Skin, binaryDataSkin);            
+            }
+            return binaryDataFiles;
+        }
     }
 
     /// <summary>
@@ -246,6 +272,9 @@ namespace AssetGenerator
         public Manifest.Camera Camera = null;
         public bool Animated = false;
         public bool? Loadable = true;
+        public bool Individual = false;
+        
+        
     }
 
     /// <summary>
