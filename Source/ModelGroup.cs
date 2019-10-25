@@ -273,8 +273,6 @@ namespace AssetGenerator
         public bool Animated = false;
         public bool? Loadable = true;
         public bool Individual = false;
-        
-        
     }
 
     /// <summary>
