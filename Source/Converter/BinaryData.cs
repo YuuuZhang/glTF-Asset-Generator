@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
 
 namespace AssetGenerator.Conversion
 {
@@ -22,7 +21,7 @@ namespace AssetGenerator.Conversion
             Name = name;
             Writer = new BinaryWriter(new MemoryStream());
         }
-        
+
         public void Dispose()
         {
             Writer.BaseStream.Dispose();

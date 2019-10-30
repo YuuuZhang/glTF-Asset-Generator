@@ -11,35 +11,16 @@ namespace AssetGenerator.ModelGroups
 
         public Buffer_Misc(List<string> imageList)
         {
-            var baseColorTexture = new Texture { Source = UseTexture(imageList, "BaseColor_Grey")};
+            NoSampleImages = true;
 
-            // Track the common properties for use in the readme
-            CommonProperties.Add(new Property(PropertyName.BaseColorTexture, baseColorTexture.Source.ToReadmeString()));
+            // There are no common properties in this model group.
 
-            Model CreateModel(Action<List<Property>, Runtime.MeshPrimitive> setProperties) 
+            Model CreateModel(Action<List<Property>, AnimationChannel, Node> setProperties) 
             {
                 var properties = new List<Property>();
-                Runtime.MeshPrimitive meshPrimitive = MeshPrimitive.CreateSinglePlane();
+                Runtime.MeshPrimitive meshPrimitive = MeshPrimitive.CreateSinglePlane(includeTextureCoords: false);
 
-                // Apply the common properties to the glTF
-                meshPrimitive.Colors = Data.Create
-                (
-                    new[]
-                    {
-                        new Vector3(0.0f, 1.0f, 0.0f),
-                        new Vector3(1.0f, 0.0f, 0.0f),
-                        new Vector3(1.0f, 1.0f, 0.0f),
-                        new Vector3(0.0f, 0.0f, 1.0f),
-                    }
-                );
-                meshPrimitive.Material = new Runtime.Material
-                {
-                    PbrMetallicRoughness = new PbrMetallicRoughness
-                    {
-                        BaseColorTexture = new TextureInfo { Texture = baseColorTexture },
-                    },
-                };
-
+                // Apply the common properties to the glTF.
                 var node = new Node
                 {
                     Mesh = new Runtime.Mesh
@@ -50,33 +31,10 @@ namespace AssetGenerator.ModelGroups
                         }
                     }
                 };
-                var channel = new AnimationChannel
-                {
-                    Target = new AnimationChannelTarget
-                    {
-                        Node = node,
-                        Path = AnimationChannelTargetPath.Translation,
-                    },
-                    Sampler = new AnimationSampler
-                    {
-                        Interpolation = AnimationSamplerInterpolation.Linear,
-                        Input = Data.Create(new[]
-                        {
-                            0.0f,
-                            2.0f,
-                            4.0f,
-                        }),
-                        Output = Data.Create(new[]
-                        {
-                            new Vector3(-0.1f, 0.0f, 0.0f),
-                            new Vector3(0.1f, 0.0f, 0.0f),
-                            new Vector3(-0.1f, 0.0f, 0.0f),
-                        }),
-                    },
-                };
+                var channel = new AnimationChannel();
 
                 // Apply the proerties that are specific to this glTF
-                setProperties(properties, meshPrimitive);
+                setProperties(properties, channel, node);
 
                 // Create the glTF object
                 GLTF gltf = CreateGLTF(() => new Scene
@@ -101,26 +59,46 @@ namespace AssetGenerator.ModelGroups
                     Properties = properties,
                     GLTF = gltf,
                     Animated = true,
-                    Individual = true,
+                    SeparateBuffers = true,
                 };
             }
-            void SetUvTypeFloat(List<Property> properties, Runtime.MeshPrimitive meshPrimitive)
+
+            void setTranslationChanneltarget(AnimationChannel channel, Node node)
             {
-                meshPrimitive.TexCoords0.OutputType = DataType.Float;
-                properties.Add(new Property(PropertyName.VertexUV0, meshPrimitive.TexCoords0.OutputType.ToReadmeString()));
+                channel.Target = new AnimationChannelTarget
+                {
+                    Node = node,
+                    Path = AnimationChannelTargetPath.Translation,
+                };
             }
-            void SetColorTypeFloat(List<Property> properties, Runtime.MeshPrimitive meshPrimitive)
+
+            void SetLinearSamplerForTranslation(AnimationChannel channel)
             {
-                meshPrimitive.Colors.OutputType = DataType.Float;
-                properties.Add(new Property(PropertyName.VertexColor, $"Vector3 {meshPrimitive.Colors.OutputType.ToReadmeString()}"));
+                channel.Sampler = new AnimationSampler
+                {
+                    Interpolation = AnimationSamplerInterpolation.Linear,
+                    Input = Data.Create(new[]
+                    {
+                        0.0f,
+                        2.0f,
+                        4.0f,
+                    }),
+                    Output = Data.Create(new[]
+                    {
+                        new Vector3(-0.1f, 0.0f, 0.0f),
+                        new Vector3(0.1f, 0.0f, 0.0f),
+                        new Vector3(-0.1f, 0.0f, 0.0f),
+                    }),
+                };
             }
 
             Models = new List<Model>
             {
-                CreateModel((properties, meshPrimitive) =>
+                CreateModel((properties, channel, node) =>
                 {
-                    SetUvTypeFloat(properties, meshPrimitive);
-                    SetColorTypeFloat(properties, meshPrimitive);
+                    setTranslationChanneltarget(channel, node);
+                    SetLinearSamplerForTranslation(channel);
+                    properties.Add(new Property(PropertyName.Description, "There is one animation with one channel that targets the translation of the node"));                    
                 })
             };
 

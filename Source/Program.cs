@@ -128,29 +128,47 @@ namespace AssetGenerator
                 {
                     var model = modelGroup.Models[comboIndex];
                     var filename = $"{modelGroup.Id}_{comboIndex:00}.gltf";
-                    var binaryData = modelGroup.CreateBinaryData(model.Individual, modelGroup.Id, comboIndex);
 
-                    // Pass the desired properties to the runtime layer, which then coverts that data into
-                    // a gltf loader object, ready to create the model.                    
-                    var converter = new Converter(model.Individual, type => binaryData[type], model.CreateSchemaInstance);
-                    glTFLoader.Schema.Gltf gltf = converter.Convert(model.GLTF);
-                    
-                    // Makes last second changes to the model that bypass the runtime layer.
-                    model.PostRuntimeChanges?.Invoke(gltf);
-                    
-                    // Create the .gltf file and writes the model's data to it.
-                    string assetFile = Path.Combine(modelGroupFolder, filename);
-                    glTFLoader.Interface.SaveModel(gltf, assetFile);
-                    
-                    // Create the .bin file and writes the model's data to it.
-                    foreach (BinaryDataType binaryDataType in Enum.GetValues(typeof(BinaryDataType)))
-                    {                                               
-                        if (!(binaryData[binaryDataType].Bytes.Length == 0))
+                    void Convert(Func<BinaryDataType, BinaryData> getBinaryData)
+                    {
+                        // Pass the desired properties to the runtime layer, which then coverts that data into
+                        // a gltf loader object, ready to create the model.
+                        var converter = new Converter(getBinaryData, model.CreateSchemaInstance);
+                        glTFLoader.Schema.Gltf gltf = converter.Convert(model.GLTF);
+                        
+                        // Makes last second changes to the model that bypass the runtime layer.
+                        model.PostRuntimeChanges?.Invoke(gltf);
+                        
+                        // Create the .gltf file and writes the model's data to it.
+                        string assetFile = Path.Combine(modelGroupFolder, filename);
+                        glTFLoader.Interface.SaveModel(gltf, assetFile);
+                    }
+
+                    void WriteBinaryDataFiles(params BinaryData[] bins)
+                    {
+                        foreach (var bin in bins)
                         {
-                            string binaryDataFile = Path.Combine(modelGroupFolder, binaryData[binaryDataType].Name);
-                            File.WriteAllBytes(binaryDataFile, binaryData[binaryDataType].Bytes); 
-                            binaryData[binaryDataType].Dispose();
+                            // Write model data to the .bin file.
+                            File.WriteAllBytes(Path.Combine(modelGroupFolder, bin.Name), bin.Bytes);
                         }
+                    }
+
+                    if (!model.SeparateBuffers)
+                    {
+                        using (var binaryData = new BinaryData($"{modelGroup.Id}_{comboIndex:00}.bin"))
+                        {
+                            Convert(type => binaryData);
+                            WriteBinaryDataFiles(binaryData);
+                        }                        
+                    }
+                    else
+                    {
+                        using(var binaryData = new BinaryData($"{modelGroup.Id}_{comboIndex:00}.bin"))
+                        using(var binaryDataAnimation = new BinaryData($"{modelGroup.Id}_Animation_{comboIndex:00}.bin"))
+                        {
+                            Convert(type => type == BinaryDataType.Animation ? binaryDataAnimation : binaryData);
+                            WriteBinaryDataFiles(binaryData, binaryDataAnimation);
+                        }                        
                     }
 
                     readme.SetupTable(modelGroup, comboIndex, model, Path.GetFileName(savePath));

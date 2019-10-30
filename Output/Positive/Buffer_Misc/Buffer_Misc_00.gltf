@@ -19,27 +19,13 @@
     },
     {
       "bufferView": 1,
-      "componentType": 5126,
-      "count": 4,
-      "type": "VEC3",
-      "name": "Colors Accessor"
-    },
-    {
-      "bufferView": 2,
-      "componentType": 5126,
-      "count": 4,
-      "type": "VEC2",
-      "name": "UV Accessor 0"
-    },
-    {
-      "bufferView": 3,
       "componentType": 5125,
       "count": 6,
       "type": "SCALAR",
       "name": "Indices Accessor"
     },
     {
-      "bufferView": 4,
+      "bufferView": 2,
       "componentType": 5126,
       "count": 3,
       "type": "SCALAR",
@@ -52,7 +38,7 @@
       "name": "Animation Sampler Input"
     },
     {
-      "bufferView": 5,
+      "bufferView": 3,
       "componentType": 5126,
       "count": 3,
       "type": "VEC3",
@@ -72,8 +58,8 @@
       ],
       "samplers": [
         {
-          "input": 4,
-          "output": 5
+          "input": 2,
+          "output": 3
         }
       ]
     }
@@ -85,7 +71,7 @@
   "buffers": [
     {
       "uri": "Buffer_Misc_00.bin",
-      "byteLength": 152
+      "byteLength": 72
     },
     {
       "uri": "Buffer_Misc_Animation_00.bin",
@@ -101,18 +87,6 @@
     {
       "buffer": 0,
       "byteOffset": 48,
-      "byteLength": 48,
-      "name": "Colors"
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 96,
-      "byteLength": 32,
-      "name": "Texture Coords 0"
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 128,
       "byteLength": 24,
       "name": "Indices"
     },
@@ -128,31 +102,14 @@
       "name": "Animation Sampler Output"
     }
   ],
-  "images": [
-    {
-      "uri": "Textures/BaseColor_Grey.png"
-    }
-  ],
-  "materials": [
-    {
-      "pbrMetallicRoughness": {
-        "baseColorTexture": {
-          "index": 0
-        }
-      }
-    }
-  ],
   "meshes": [
     {
       "primitives": [
         {
           "attributes": {
-            "POSITION": 0,
-            "COLOR_0": 1,
-            "TEXCOORD_0": 2
+            "POSITION": 0
           },
-          "indices": 3,
-          "material": 0
+          "indices": 1
         }
       ]
     }
@@ -168,11 +125,6 @@
       "nodes": [
         0
       ]
-    }
-  ],
-  "textures": [
-    {
-      "source": 0
     }
   ]
 }

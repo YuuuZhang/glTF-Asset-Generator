@@ -57,7 +57,7 @@ namespace AssetGenerator.Conversion
             }
         }
 
-        public Converter(bool individual, Func<BinaryDataType, BinaryData> getBinaryData, Func<Type, object> createInstance = null)
+        public Converter(Func<BinaryDataType, BinaryData> getBinaryData, Func<Type, object> createInstance = null)
         {
             this.getBinaryData = getBinaryData;
             this.createInstance = createInstance;
