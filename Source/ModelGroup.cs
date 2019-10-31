@@ -233,11 +233,6 @@ namespace AssetGenerator
                 properties.Sort((x, y) => x.Name.CompareTo(y.Name));
             }
         }
-
-        /// <summary>
-        ///  Cteate glTF binary data
-        /// </summary>
-        /// <returns> binary data files </returns>
     }
 
     /// <summary>
