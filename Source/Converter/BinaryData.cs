@@ -3,7 +3,6 @@ using System.IO;
 
 namespace AssetGenerator.Conversion
 {
-
     internal enum BinaryDataType
     {
         Animation,

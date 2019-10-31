@@ -98,7 +98,7 @@ namespace AssetGenerator.ModelGroups
                 {
                     setTranslationChanneltarget(channel, node);
                     SetLinearSamplerForTranslation(channel);
-                    properties.Add(new Property(PropertyName.Description, "There is one animation with one channel that targets the translation of the node"));                    
+                    properties.Add(new Property(PropertyName.Description, "The mesh primitive and animation data are stored in separate buffers."));
                 })
             };
 

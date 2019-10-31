@@ -21,7 +21,7 @@ namespace AssetGenerator
         public List<Runtime.Image> UsedTextures { get; private set; }
         public List<Runtime.Image> UsedFigures { get; private set; }
         public bool NoSampleImages { get; protected set; }
-                
+
         protected ModelGroup()
         {
             CommonProperties = new List<Property>();
