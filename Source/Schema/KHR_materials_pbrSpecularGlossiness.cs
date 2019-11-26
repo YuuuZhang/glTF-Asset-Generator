@@ -65,7 +65,7 @@ namespace glTFLoader.Schema
         /// <summary>
         /// The reflected diffuse factor of the material.
         /// </summary>
-        [Newtonsoft.Json.JsonConverterAttribute(typeof(glTFLoader.Shared.ArrayConverter))]
+        //[Newtonsoft.Json.JsonConverterAttribute(typeof(glTFLoader.Shared.ArrayConverter))]
         [Newtonsoft.Json.JsonPropertyAttribute("diffuseFactor")]
         public float[] DiffuseFactor
         {
@@ -121,7 +121,7 @@ namespace glTFLoader.Schema
         /// <summary>
         /// The specular RGB color of the material.
         /// </summary>
-        [Newtonsoft.Json.JsonConverterAttribute(typeof(glTFLoader.Shared.ArrayConverter))]
+        //[Newtonsoft.Json.JsonConverterAttribute(typeof(glTFLoader.Shared.ArrayConverter))]
         [Newtonsoft.Json.JsonPropertyAttribute("specularFactor")]
         public float[] SpecularFactor
         {

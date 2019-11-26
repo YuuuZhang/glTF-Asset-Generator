@@ -261,3 +261,7 @@
 | [11](Texture_Sampler/ValidatorResults/Texture_Sampler_11.json) | :white_check_mark: | 0 | 0 | 0 | 0 |
 | [12](Texture_Sampler/ValidatorResults/Texture_Sampler_12.json) | :white_check_mark: | 0 | 0 | 0 | 0 |
 | [13](Texture_Sampler/ValidatorResults/Texture_Sampler_13.json) | :white_check_mark: | 0 | 0 | 0 | 0 |
+# Binary gl T F
+| Model | Status | Errors | Warnings | Infos | Hints |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| [00](Binary_glTF/ValidatorResults/Binary_glTF_00.json) | :white_check_mark: | 0 | 0 | 0 | 0 |

@@ -247,6 +247,7 @@ namespace AssetGenerator
         public bool Animated = false;
         public bool? Loadable = true;
         public bool SeparateBuffers = false;
+        public bool PackedAllGLBData = false;
     }
 
     /// <summary>
@@ -281,5 +282,6 @@ namespace AssetGenerator
         Animation_SamplerType = 23,
         Instancing = 24,
         Buffer_Misc = 25,
+        Binary_glTF = 26,
     }
 }

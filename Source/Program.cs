@@ -58,6 +58,7 @@ namespace AssetGenerator
                 new Node_Attribute(imageList),
                 new Node_NegativeScale(imageList),
                 new Texture_Sampler(imageList),
+                new Binary_glTF(imageList),
             };
             var negativeTests = new List<ModelGroup>
             {
@@ -127,7 +128,7 @@ namespace AssetGenerator
                 for (var comboIndex = 0; comboIndex < numCombos; comboIndex++)
                 {
                     var model = modelGroup.Models[comboIndex];
-                    var filename = $"{modelGroup.Id}_{comboIndex:00}.gltf";
+                    var filename = $"{modelGroup.Id}_{comboIndex:00}.gltf"; 
 
                     void Convert(Func<BinaryDataType, BinaryData> getBinaryData)
                     {
@@ -169,6 +170,13 @@ namespace AssetGenerator
                             Convert(type => type == BinaryDataType.Animation ? binaryDataAnimation : binaryData);
                             WriteBinaryDataFiles(binaryData, binaryDataAnimation);
                         }
+                    }
+
+                    if (model.PackedAllGLBData)
+                    {
+                        String inputGltfFilePath = Path.Combine(modelGroupFolder, filename);
+                        string outputGlbFile = Path.ChangeExtension(inputGltfFilePath, "glb");
+                        glTFLoader.Interface.Pack(inputGltfFilePath, outputGlbFile);
                     }
 
                     readme.SetupTable(modelGroup, comboIndex, model, Path.GetFileName(savePath));

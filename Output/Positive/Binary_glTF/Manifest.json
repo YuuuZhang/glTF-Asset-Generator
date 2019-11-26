@@ -1,0 +1,18 @@
+{
+  "folder": "Binary_glTF",
+  "id": 26,
+  "models": [
+    {
+      "fileName": "Binary_glTF_00.gltf",
+      "loadable": true,
+      "sampleImageName": "Figures/SampleImages/Binary_glTF_00.png",
+      "camera": {
+        "translation": [
+          0.0,
+          0.0,
+          1.3
+        ]
+      }
+    }
+  ]
+}
