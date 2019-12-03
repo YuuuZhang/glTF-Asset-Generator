@@ -265,3 +265,4 @@
 | Model | Status | Errors | Warnings | Infos | Hints |
 | :---: | :---: | :---: | :---: | :---: | :---: |
 | [00](Binary_glTF/ValidatorResults/Binary_glTF_00.json) | :white_check_mark: | 0 | 0 | 0 | 0 |
+| [01](Binary_glTF/ValidatorResults/Binary_glTF_01.json) | :white_check_mark: | 0 | 0 | 0 | 0 |

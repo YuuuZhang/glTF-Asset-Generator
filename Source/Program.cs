@@ -128,7 +128,7 @@ namespace AssetGenerator
                 for (var comboIndex = 0; comboIndex < numCombos; comboIndex++)
                 {
                     var model = modelGroup.Models[comboIndex];
-                    var filename = $"{modelGroup.Id}_{comboIndex:00}.gltf"; 
+                    var filename = $"{modelGroup.Id}_{comboIndex:00}.gltf";
 
                     void Convert(Func<BinaryDataType, BinaryData> getBinaryData)
                     {
@@ -172,11 +172,29 @@ namespace AssetGenerator
                         }
                     }
 
+                    string inputGltfFilePath = Path.Combine(modelGroupFolder, filename);
+                    string outputGlbFile = Path.ChangeExtension(inputGltfFilePath, "glb");
+
                     if (model.PackedAllGLBData)
                     {
-                        String inputGltfFilePath = Path.Combine(modelGroupFolder, filename);
-                        string outputGlbFile = Path.ChangeExtension(inputGltfFilePath, "glb");
                         glTFLoader.Interface.Pack(inputGltfFilePath, outputGlbFile);
+                    }
+                    if (model.NoPackedData)
+                    {
+                        glTFLoader.Schema.Gltf glTFModel = glTFLoader.Interface.LoadModel(inputGltfFilePath);
+
+                        byte[] bufferData = null;
+                        int bufferIndex = glTFModel.Buffers.Length == 1 ? 0 : glTFModel.Buffers.Length;
+                        if (bufferIndex == 0)
+                        {
+                            bufferData = glTFLoader.Interface.LoadBinaryBuffer(glTFModel, bufferIndex, inputGltfFilePath);
+                            glTFModel.Buffers[bufferIndex].Uri = null;
+                            glTFLoader.Interface.SaveBinaryModel(glTFModel, bufferData, outputGlbFile);
+                        }
+                        else
+                        {
+                            throw new ArgumentNullException($"{nameof(glTFModel)} multiple binary buffer references found");
+                        }
                     }
 
                     readme.SetupTable(modelGroup, comboIndex, model, Path.GetFileName(savePath));

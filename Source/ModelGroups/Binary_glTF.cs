@@ -16,7 +16,7 @@ namespace AssetGenerator.ModelGroups
             // Track the common properties for use in the readme.
             CommonProperties.Add(new Property(PropertyName.BaseColorTexture, baseColorTexture.Source.ToReadmeString()));
 
-            Model CreateModel(Action<List<Property>, Node> setProperties)
+            Model CreateModel(Action<List<Property>, Node> setProperties, Action<Model> setPackGLBData)
             {
                 var properties = new List<Property>();
                 Runtime.MeshPrimitive meshPrimitive = MeshPrimitive.CreateSinglePlane();
@@ -53,20 +53,28 @@ namespace AssetGenerator.ModelGroups
                     },
                 });
 
-                return new Model
+                var model = new Model
                 {
                     Properties = properties,
                     GLTF = gltf,
-                    PackedAllGLBData = true,
                 };
+
+                setPackGLBData(model);
+
+                return model;
             }
 
             Models = new List<Model>
             {
                 CreateModel((properties, node) =>
                 {
-                    properties.Add(new Property(PropertyName.Description, "This GLB file is packed all resource data: image and .bin resources."));
-                })
+                    properties.Add(new Property(PropertyName.Description, "This GLB file is packed all resource data: BaseColor_A.png and .bin resources."));
+                }, (model) => { model.PackedAllGLBData = true; }),
+
+                CreateModel((properties, node) =>
+                {
+                    properties.Add(new Property(PropertyName.Description, "This GLB file do not packed resource data, still points to external resource: BaseColor_A.png."));
+                }, (model) => { model.NoPackedData = true; })
             };
 
             GenerateUsedPropertiesList();

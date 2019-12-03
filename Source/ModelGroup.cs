@@ -248,6 +248,7 @@ namespace AssetGenerator
         public bool? Loadable = true;
         public bool SeparateBuffers = false;
         public bool PackedAllGLBData = false;
+        public bool NoPackedData = false;
     }
 
     /// <summary>
