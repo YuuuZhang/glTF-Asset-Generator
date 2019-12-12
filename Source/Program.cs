@@ -182,13 +182,10 @@ namespace AssetGenerator
                     if (model.NoPackedData)
                     {
                         glTFLoader.Schema.Gltf glTFModel = glTFLoader.Interface.LoadModel(inputGltfFilePath);
-
-                        byte[] bufferData = null;
-                        int bufferIndex = glTFModel.Buffers.Length == 1 ? 0 : glTFModel.Buffers.Length;
-                        if (bufferIndex == 0)
+                        if (glTFModel.Buffers.Length == 0)
                         {
-                            bufferData = glTFLoader.Interface.LoadBinaryBuffer(glTFModel, bufferIndex, inputGltfFilePath);
-                            glTFModel.Buffers[bufferIndex].Uri = null;
+                            byte[] bufferData = glTFLoader.Interface.LoadBinaryBuffer(glTFModel, 0, inputGltfFilePath);
+                            glTFModel.Buffers[0].Uri = null;
                             glTFLoader.Interface.SaveBinaryModel(glTFModel, bufferData, outputGlbFile);
                         }
                         else
