@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace AssetGenerator.ModelGroups
 {
-    internal class Binary_glTF : ModelGroup
+    internal class Binary : ModelGroup
     {
-        public override ModelGroupId Id => ModelGroupId.Binary_glTF;
+        public override ModelGroupId Id => ModelGroupId.Binary;
 
-        public Binary_glTF(List<string> imageList)
+        public Binary(List<string> imageList)
         {
             var baseColorTexture = new Texture { Source = UseTexture(imageList, "BaseColor_A") };
 
@@ -68,13 +68,17 @@ namespace AssetGenerator.ModelGroups
             {
                 CreateModel((properties, node) =>
                 {
-                    properties.Add(new Property(PropertyName.Description, "This GLB file is packed all resource data: BaseColor_A.png and .bin resources."));
-                }, (model) => { model.PackedAllGLBData = true; }),
+                    properties.Add(new Property(PropertyName.Description, "This GLB file is packed all resource data: BaseColor_A.png and .bin."));
+                }, (model) => { model.BinaryPacked = BinaryPackedType.GLBPacked_AllExternalData; }),
 
                 CreateModel((properties, node) =>
                 {
-                    properties.Add(new Property(PropertyName.Description, "This GLB file do not packed resource data, still points to external resource: BaseColor_A.png."));
-                }, (model) => { model.NoPackedData = true; })
+                    properties.Add(new Property(PropertyName.Description, "This GLB file is packed one resource data: .bin, and points to one external resource: BaseColor_A.png."));
+                }, (model) => { model.BinaryPacked = BinaryPackedType.GLBPacked_SomeExternalData; }),
+                CreateModel((properties, node) =>
+                {
+                    properties.Add(new Property(PropertyName.Description, "This GLB file is not packed any resource data, still points to external resource: BaseColor_A.png and .bin."));
+                }, (model) => { model.BinaryPacked = BinaryPackedType.GLBPacked_NoExternalData; })
             };
 
             GenerateUsedPropertiesList();

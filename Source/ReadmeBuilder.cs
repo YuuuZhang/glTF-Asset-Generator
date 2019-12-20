@@ -142,7 +142,7 @@ namespace AssetGenerator
             var modelInfo = new List<string>
             {
                 // Displays the number of the model and is a link to the model.
-                $"[{modelNumber}]({modelName}.gltf)<br>[View]({liveURL})"
+                model.BinaryPacked == BinaryPackedType.NoGLB ? $"[{modelNumber}]({modelName}.gltf)<br>[View]({liveURL})" : $"[{modelNumber}]({modelName}.glb)<br>[View]({liveURL})"
             };
 
             if (test.NoSampleImages == false)

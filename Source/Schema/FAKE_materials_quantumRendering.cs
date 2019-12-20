@@ -50,7 +50,6 @@
         /// <summary>
         /// The reflected planck factor of the material.
         /// </summary>
-        //[Newtonsoft.Json.JsonConverterAttribute(typeof(glTFLoader.Shared.ArrayConverter))]
         [Newtonsoft.Json.JsonPropertyAttribute("planckFactor")]
         public float[] PlanckFactor
         {
@@ -100,7 +99,6 @@
         /// <summary>
         /// The entanglement factor of the material.
         /// </summary>
-        //[Newtonsoft.Json.JsonConverterAttribute(typeof(glTFLoader.Shared.ArrayConverter))]
         [Newtonsoft.Json.JsonPropertyAttribute("entanglementFactor")]
         public float[] EntanglementFactor
         {

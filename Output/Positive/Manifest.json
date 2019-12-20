@@ -2429,13 +2429,13 @@
     ]
   },
   {
-    "folder": "Binary_glTF",
+    "folder": "Binary",
     "id": 26,
     "models": [
       {
-        "fileName": "Binary_glTF_00.gltf",
+        "fileName": "Binary_00.glb",
         "loadable": true,
-        "sampleImageName": "Figures/SampleImages/Binary_glTF_00.png",
+        "sampleImageName": "Figures/SampleImages/Binary_00.png",
         "camera": {
           "translation": [
             0.0,
@@ -2445,9 +2445,21 @@
         }
       },
       {
-        "fileName": "Binary_glTF_01.gltf",
+        "fileName": "Binary_01.glb",
         "loadable": true,
-        "sampleImageName": "Figures/SampleImages/Binary_glTF_01.png",
+        "sampleImageName": "Figures/SampleImages/Binary_01.png",
+        "camera": {
+          "translation": [
+            0.0,
+            0.0,
+            1.3
+          ]
+        }
+      },
+      {
+        "fileName": "Binary_02.glb",
+        "loadable": true,
+        "sampleImageName": "Figures/SampleImages/Binary_02.png",
         "camera": {
           "translation": [
             0.0,

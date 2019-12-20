@@ -233,7 +233,7 @@ namespace AssetGenerator
             }
         }
     }
-
+       
     /// <summary>
     /// glTF model and related metadata.
     /// </summary>
@@ -247,8 +247,7 @@ namespace AssetGenerator
         public bool Animated = false;
         public bool? Loadable = true;
         public bool SeparateBuffers = false;
-        public bool PackedAllGLBData = false;
-        public bool NoPackedData = false;
+        public BinaryPackedType BinaryPacked = BinaryPackedType.NoGLB;
     }
 
     /// <summary>
@@ -283,6 +282,18 @@ namespace AssetGenerator
         Animation_SamplerType = 23,
         Instancing = 24,
         Buffer_Misc = 25,
-        Binary_glTF = 26,
+        Binary = 26,
+    }
+
+    /// <summary>
+    /// The enum is whether GLB files need to points in external resources(.bin, texture).
+    /// NoGLB: Do not use GLB File format.
+    /// </summary>
+    internal enum BinaryPackedType
+    {
+        NoGLB,
+        GLBPacked_AllExternalData,
+        GLBPacked_SomeExternalData,
+        GLBPacked_NoExternalData,
     }
 }

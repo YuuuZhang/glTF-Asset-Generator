@@ -1,6 +1,6 @@
 {
-    "uri": "Binary_glTF_00.gltf",
-    "mimeType": "model/gltf+json",
+    "uri": "Binary_01.glb",
+    "mimeType": "model/gltf-binary",
     "validatorVersion": "2.0.0-dev.2.7",
     "issues": {
         "numErrors": 0,
@@ -17,8 +17,7 @@
             {
                 "pointer": "/buffers/0",
                 "mimeType": "application/gltf-buffer",
-                "storage": "external",
-                "uri": "Binary_glTF_00.bin",
+                "storage": "glb",
                 "byteLength": 104
             },
             {

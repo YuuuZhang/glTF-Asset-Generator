@@ -58,7 +58,7 @@ namespace AssetGenerator
                 new Node_Attribute(imageList),
                 new Node_NegativeScale(imageList),
                 new Texture_Sampler(imageList),
-                new Binary_glTF(imageList),
+                new Binary(imageList),
             };
             var negativeTests = new List<ModelGroup>
             {
@@ -129,7 +129,8 @@ namespace AssetGenerator
                 {
                     var model = modelGroup.Models[comboIndex];
                     var filename = $"{modelGroup.Id}_{comboIndex:00}.gltf";
-
+                    glTFLoader.Schema.Gltf binaryPackedGltf = null;
+                    byte[] binaryPackedBuffer = null;
                     void Convert(Func<BinaryDataType, BinaryData> getBinaryData)
                     {
                         // Pass the desired properties to the runtime layer, which then coverts that data into
@@ -142,7 +143,15 @@ namespace AssetGenerator
 
                         // Create the .gltf file and writes the model's data to it.
                         string assetFile = Path.Combine(modelGroupFolder, filename);
-                        glTFLoader.Interface.SaveModel(gltf, assetFile);
+                        if (model.BinaryPacked == BinaryPackedType.NoGLB || model.BinaryPacked == BinaryPackedType.GLBPacked_AllExternalData)
+                        {
+                            glTFLoader.Interface.SaveModel(gltf, assetFile);
+                        }
+                        else
+                        {
+                            // glTF model uses in GLB file format.
+                            binaryPackedGltf = gltf;
+                        }
                     }
 
                     void WriteBinaryDataFiles(params BinaryData[] bins)
@@ -160,6 +169,8 @@ namespace AssetGenerator
                         {
                             Convert(type => binaryData);
                             WriteBinaryDataFiles(binaryData);
+                            // Binary data uses in GLB file format.
+                            binaryPackedBuffer = model.BinaryPacked == BinaryPackedType.GLBPacked_SomeExternalData ? binaryData.Bytes : null;
                         }
                     }
                     else
@@ -172,26 +183,41 @@ namespace AssetGenerator
                         }
                     }
 
-                    string inputGltfFilePath = Path.Combine(modelGroupFolder, filename);
-                    string outputGlbFile = Path.ChangeExtension(inputGltfFilePath, "glb");
+                    if (model.BinaryPacked != BinaryPackedType.NoGLB)
+                    {
+                        string GLBFileName = $"{modelGroup.Id}_{comboIndex:00}.glb";
+                        string inputGltfFilePath = Path.Combine(modelGroupFolder, filename);
+                        string outputGlbFilePath = Path.Combine(modelGroupFolder, GLBFileName);
 
-                    if (model.PackedAllGLBData)
-                    {
-                        glTFLoader.Interface.Pack(inputGltfFilePath, outputGlbFile);
-                    }
-                    if (model.NoPackedData)
-                    {
-                        glTFLoader.Schema.Gltf glTFModel = glTFLoader.Interface.LoadModel(inputGltfFilePath);
-                        if (glTFModel.Buffers.Length == 0)
+                        if (model.BinaryPacked == BinaryPackedType.GLBPacked_AllExternalData)
                         {
-                            byte[] bufferData = glTFLoader.Interface.LoadBinaryBuffer(glTFModel, 0, inputGltfFilePath);
-                            glTFModel.Buffers[0].Uri = null;
-                            glTFLoader.Interface.SaveBinaryModel(glTFModel, bufferData, outputGlbFile);
+                            // Packed all external resources into GLB file.
+                            glTFLoader.Interface.Pack(inputGltfFilePath, outputGlbFilePath);
+                            File.Delete(inputGltfFilePath);
                         }
                         else
                         {
-                            throw new ArgumentNullException($"{nameof(glTFModel)} multiple binary buffer references found");
+                            if (binaryPackedGltf.Buffers.Length == 1)
+                            {
+                                if (model.BinaryPacked == BinaryPackedType.GLBPacked_SomeExternalData)
+                                {
+                                    binaryPackedGltf.Buffers[0].Uri = null;
+                                    // GLB file points to external resources: image.
+                                    glTFLoader.Interface.SaveBinaryModel(binaryPackedGltf, binaryPackedBuffer, outputGlbFilePath);
+                                }
+                                if (model.BinaryPacked == BinaryPackedType.GLBPacked_NoExternalData)
+                                {
+                                    // GLB file points to external resources: .bin and image.
+                                    glTFLoader.Interface.SaveBinaryModel(binaryPackedGltf, null, outputGlbFilePath);
+                                }
+                            }
+                            else
+                            {
+                                throw new ArgumentNullException($"{nameof(binaryPackedGltf)} multiple binary buffer references found");
+                            }
                         }
+                        // Make mainfest filename points to GLB file.
+                        filename = GLBFileName;
                     }
 
                     readme.SetupTable(modelGroup, comboIndex, model, Path.GetFileName(savePath));

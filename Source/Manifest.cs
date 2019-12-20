@@ -34,7 +34,7 @@ namespace AssetGenerator
                 Loadable = loadable;
                 if (noSampleImages == false)
                 {
-                    SampleImageName = $"Figures/SampleImages/{name.Replace(".gltf", (animated ? ".gif" : ".png"))}";
+                    SampleImageName = name.Contains(".glb") ? $"Figures/SampleImages/{name.Replace(".glb", (animated ? ".gif" : ".png"))}" : $"Figures/SampleImages/{name.Replace(".gltf", (animated ? ".gif" : ".png"))}";
                 }
 
                 if (cameraPositioning == null)
