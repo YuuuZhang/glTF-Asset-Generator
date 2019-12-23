@@ -147,7 +147,10 @@ function loadManifestFile(manifestJSON) {
     for (const modelGroup of modelGroups) {
         const modelFolder = modelGroup.folder;
         for (const model of modelGroup.models) {
-            const baseFileName = path.basename(model.fileName, '.gltf');
+            let baseFileName = path.basename(model.fileName, '.gltf');
+            if (model.fileName.indexOf('.glb') >= 0) {
+                baseFileName = path.basename(model.fileName, '.glb');
+            }
             const logPath = path.join(outputFolder, modelFolder, 'ValidatorResults');
             result.push({
                 modelName: model.fileName,

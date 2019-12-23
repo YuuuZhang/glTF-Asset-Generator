@@ -264,6 +264,6 @@
 # Binary
 | Model | Status | Errors | Warnings | Infos | Hints |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| [lb](Binary/ValidatorResults/Binary_00.glb.json) | :white_check_mark: | 0 | 0 | 0 | 0 |
-| [lb](Binary/ValidatorResults/Binary_01.glb.json) | :white_check_mark: | 0 | 0 | 0 | 0 |
-| [lb](Binary/ValidatorResults/Binary_02.glb.json) | :white_check_mark: | 0 | 0 | 0 | 0 |
+| [00](Binary/ValidatorResults/Binary_00.json) | :white_check_mark: | 0 | 0 | 0 | 0 |
+| [01](Binary/ValidatorResults/Binary_01.json) | :white_check_mark: | 0 | 0 | 0 | 0 |
+| [02](Binary/ValidatorResults/Binary_02.json) | :white_check_mark: | 0 | 0 | 0 | 0 |
