@@ -149,7 +149,7 @@ namespace AssetGenerator
                         }
                         else
                         {
-                            // glTF model uses in GLB file format.
+                            // glTF model uses in packed all external resources to GLB file.
                             binaryPackedGltf = gltf;
                         }
                     }
