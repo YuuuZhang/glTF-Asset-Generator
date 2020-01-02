@@ -152,7 +152,7 @@
     <None Update="Resources\Figures\Thumbnails\SpecularGlossiness_Plane.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Resources\Figures\Thumbnails\testJPEG.jpeg">
+    <None Update="Resources\Figures\Thumbnails\Instancing_13.jpeg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resources\Figures\UVSpace0.png">
@@ -221,7 +221,7 @@
     <None Update="Resources\Textures\SpecularGlossiness_Plane.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Resources\Textures\testJPEG.jpeg">
+    <None Update="Resources\Textures\Instancing_13.jpeg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resources\Thumbnails\Animation_Skin_12.png">

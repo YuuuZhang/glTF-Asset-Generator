@@ -1,0 +1,110 @@
+{
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 4,
+      "type": "VEC3",
+      "max": [
+        0.5,
+        0.5,
+        0.0
+      ],
+      "min": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "name": "Positions Accessor"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 4,
+      "type": "VEC2",
+      "name": "UV Accessor 0"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5125,
+      "count": 6,
+      "type": "SCALAR",
+      "name": "Indices Accessor"
+    }
+  ],
+  "asset": {
+    "generator": "glTF Asset Generator",
+    "version": "2.0"
+  },
+  "buffers": [
+    {
+      "uri": "Instancing_14.bin",
+      "byteLength": 104
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 48,
+      "name": "Positions"
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 48,
+      "byteLength": 32,
+      "name": "Texture Coords 0"
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 80,
+      "byteLength": 24,
+      "name": "Indices"
+    }
+  ],
+  "images": [
+    {
+      "uri": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJEAAABxCAIAAABa/tb2AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGqSURBVHhe7dbLjYIAFEBR67KgqcdqbMZiGPkIOJqJK5ND7t29B2HBCZ/TUFqZeWXmlZlXZl6ZeWXmlZlXZl6ZeWXmlZlXZl6ZeWXmlZlXZl6ZeWXmlZlXZl6ZeWXmlZlXZl6ZeWXmlZlXZl6ZeWXmlZlXZl6ZeWXmlZkXYHb9Oe36uS7rZX++3JZ5GG6X8+74PG/tj9AZZivMpLDc/HF/3sZ7T2YT6c7pPh9EDTObKeZ7P+2vO8S92Xba8dLMRpZlWva7zWZ2ZDLNbLR4DOt+Xb41G5dLB1HU/kFWvZ3Zqvbfc/a6YeO+Z1tP+4nkspq9EmX2zT4yW1+BD5d53pQy+2afmb0qPX3K7r29iBhgVn/KzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y0huEXUvNiDMcb1oIAAAAASUVORK5CYII="
+    }
+  ],
+  "materials": [
+    {
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        }
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "TEXCOORD_0": 1
+          },
+          "indices": 2,
+          "material": 0
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "source": 0
+    }
+  ]
+}

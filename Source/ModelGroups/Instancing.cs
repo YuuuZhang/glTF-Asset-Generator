@@ -501,6 +501,35 @@ namespace AssetGenerator.ModelGroups
                     properties.Add(new Property(PropertyName.Description, "Two animation samplers using the same output accessors."));
                     properties.Add(new Property(PropertyName.Difference, "The two animation samplers have different input values."));
                 }, (model) => { model.Camera = distantCamera; }),
+                CreateModel((properties, nodes, animations) =>
+                {
+                    var meshPrimitive = new List<Runtime.MeshPrimitive>
+                    {
+                        MeshPrimitive.CreateSinglePlane()
+                    };
+                    meshPrimitive[0].Material = CreateMaterial(CreateTextureInfo(UseTexture(imageList, "Instancing_13")));
+                    AddMeshPrimitivesToSingleNode(nodes, meshPrimitive);
+
+                    properties.Add(new Property(PropertyName.Description, "The primitive use .jpeg texture resource."));
+                }, (model) => { model.Camera = distantCamera; }),
+
+                CreateModel((properties, nodes, animations) =>
+                {
+                    Image imageDataUri = new Image
+                    {
+                        Uri = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJEAAABxCAIAAABa/tb2AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGqSURBVHhe7dbLjYIAFEBR67KgqcdqbMZiGPkIOJqJK5ND7t29B2HBCZ/TUFqZeWXmlZlXZl6ZeWXmlZlXZl6ZeWXmlZlXZl6ZeWXmlZlXZl6ZeWXmlZlXZl6ZeWXmlZlXZl6ZeWXmlZlXZl6ZeWXmlZlXZl6ZeWXmlZkXYHb9Oe36uS7rZX++3JZ5GG6X8+74PG/tj9AZZivMpLDc/HF/3sZ7T2YT6c7pPh9EDTObKeZ7P+2vO8S92Xba8dLMRpZlWva7zWZ2ZDLNbLR4DOt+Xb41G5dLB1HU/kFWvZ3Zqvbfc/a6YeO+Z1tP+4nkspq9EmX2zT4yW1+BD5d53pQy+2afmb0qPX3K7r29iBhgVn/KzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y8MvPKzCszr8y0huEXUvNiDMcb1oIAAAAASUVORK5CYII="
+                    };
+
+                    var meshPrimitive = new List<Runtime.MeshPrimitive>
+                    {
+                        MeshPrimitive.CreateSinglePlane()
+                    };
+                    meshPrimitive[0].Material = CreateMaterial(CreateTextureInfo(imageDataUri));
+                    AddMeshPrimitivesToSingleNode(nodes, meshPrimitive);
+
+                    properties.Add(new Property(PropertyName.Description, "The primitive image use data-uri."));
+                }, (model) => { model.Camera = distantCamera; }),
+
                 // To be implemented later. Needs to work as a type of interleaving.
                 //CreateModel((properties, nodes, animations) =>
                 //{

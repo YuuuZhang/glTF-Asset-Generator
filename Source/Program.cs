@@ -207,6 +207,7 @@ namespace AssetGenerator
                                 }
                                 if (model.BinaryPacked == BinaryPackedType.GLBPacked_NoExternalData)
                                 {
+
                                     // GLB file points to external resources: .bin and image.
                                     glTFLoader.Interface.SaveBinaryModel(binaryPackedGltf, null, outputGlbFilePath);
                                 }
@@ -219,6 +220,7 @@ namespace AssetGenerator
                         // Make mainfest filename points to GLB file.
                         filename = GLBFileName;
                     }
+
 
                     readme.SetupTable(modelGroup, comboIndex, model, Path.GetFileName(savePath));
                     manifest.Models.Add(new Manifest.Model(filename, modelGroup.Id, modelGroup.NoSampleImages, model.Camera, model.Animated, model.Loadable));

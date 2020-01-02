@@ -157,6 +157,30 @@
           2.7
         ]
       }
+    },
+    {
+      "fileName": "Instancing_13.gltf",
+      "loadable": true,
+      "sampleImageName": "Figures/SampleImages/Instancing_13.png",
+      "camera": {
+        "translation": [
+          0.0,
+          0.0,
+          2.7
+        ]
+      }
+    },
+    {
+      "fileName": "Instancing_14.gltf",
+      "loadable": true,
+      "sampleImageName": "Figures/SampleImages/Instancing_14.png",
+      "camera": {
+        "translation": [
+          0.0,
+          0.0,
+          2.7
+        ]
+      }
     }
   ]
 }
