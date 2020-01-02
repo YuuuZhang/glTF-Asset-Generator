@@ -168,9 +168,15 @@ namespace AssetGenerator
                         using (var binaryData = new BinaryData($"{modelGroup.Id}_{comboIndex:00}.bin"))
                         {
                             Convert(type => binaryData);
-                            WriteBinaryDataFiles(binaryData);
-                            // Binary data uses in GLB file format.
-                            binaryPackedBuffer = model.BinaryPacked == BinaryPackedType.GLBPacked_SomeExternalData ? binaryData.Bytes : null;
+                            if (model.BinaryPacked != BinaryPackedType.GLBPacked_SomeExternalData)
+                            {
+                                WriteBinaryDataFiles(binaryData);
+                            }
+                            else
+                            {
+                                // Binary data uses in packed some external resources to GLB file.
+                                binaryPackedBuffer = binaryData.Bytes;
+                            }
                         }
                     }
                     else
@@ -186,14 +192,17 @@ namespace AssetGenerator
                     if (model.BinaryPacked != BinaryPackedType.NoGLB)
                     {
                         string GLBFileName = $"{modelGroup.Id}_{comboIndex:00}.glb";
-                        string inputGltfFilePath = Path.Combine(modelGroupFolder, filename);
                         string outputGlbFilePath = Path.Combine(modelGroupFolder, GLBFileName);
 
                         if (model.BinaryPacked == BinaryPackedType.GLBPacked_AllExternalData)
                         {
+                            string inputGltfFilePath = Path.Combine(modelGroupFolder, filename);
                             // Packed all external resources into GLB file.
                             glTFLoader.Interface.Pack(inputGltfFilePath, outputGlbFilePath);
+
+                            // Delete files that do not need to show out.
                             File.Delete(inputGltfFilePath);
+                            File.Delete(Path.Combine(modelGroupFolder, ($"{modelGroup.Id}_{comboIndex:00}.bin")));
                         }
                         else
                         {
