@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Numerics;
+using System.IO;
 
 namespace AssetGenerator
 {
@@ -34,7 +35,7 @@ namespace AssetGenerator
                 Loadable = loadable;
                 if (noSampleImages == false)
                 {
-                    SampleImageName = name.Contains(".glb") ? $"Figures/SampleImages/{name.Replace(".glb", (animated ? ".gif" : ".png"))}" : $"Figures/SampleImages/{name.Replace(".gltf", (animated ? ".gif" : ".png"))}";
+                    SampleImageName = string.Concat($"Figures/SampleImages/{Path.GetFileNameWithoutExtension(name)}", (animated ? ".gif" : ".png"));
                 }
 
                 if (cameraPositioning == null)

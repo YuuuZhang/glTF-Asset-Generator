@@ -233,7 +233,7 @@ namespace AssetGenerator
             }
         }
     }
-       
+
     /// <summary>
     /// glTF model and related metadata.
     /// </summary>
