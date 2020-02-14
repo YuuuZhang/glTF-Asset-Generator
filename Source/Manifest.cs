@@ -35,7 +35,7 @@ namespace AssetGenerator
                 Loadable = loadable;
                 if (noSampleImages == false)
                 {
-                    SampleImageName = string.Concat($"Figures/SampleImages/{Path.GetFileNameWithoutExtension(name)}", (animated ? ".gif" : ".png"));
+                    SampleImageName = Path.ChangeExtension($"Figures/SampleImages/{name}", (animated ? ".gif" : ".png"));
                 }
 
                 if (cameraPositioning == null)
