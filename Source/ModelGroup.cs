@@ -246,6 +246,9 @@ namespace AssetGenerator
         public Manifest.Camera Camera = null;
         public bool Animated = false;
         public bool? Loadable = true;
+        public Action<glTFLoader.Schema.Gltf> ModelGroupsSignal;
+
+        // Below two will delete later.
         public bool SeparateBuffers = false;
         public BinaryPackedType BinaryPacked = BinaryPackedType.NoGLB;
     }
@@ -285,6 +288,7 @@ namespace AssetGenerator
         Binary = 26,
     }
 
+    // This enum will delete later.
     /// <summary>
     /// The enum is whether GLB files need to points in external resources(.bin, texture).
     /// NoGLB: Do not use GLB File format.

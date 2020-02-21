@@ -2,6 +2,8 @@
 using System.Numerics;
 using AssetGenerator.Runtime;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 
 namespace AssetGenerator.ModelGroups
 {
@@ -16,7 +18,7 @@ namespace AssetGenerator.ModelGroups
             // Track the common properties for use in the readme.
             CommonProperties.Add(new Property(PropertyName.BaseColorTexture, baseColorTexture.Source.ToReadmeString()));
 
-            Model CreateModel(Action<List<Property>, Node> setProperties, Action<Model> setPackGLBData)
+            Model CreateModel(Action<List<Property>, Node> setProperties, Action<glTFLoader.Schema.Gltf> glbModelGroupSignal)
             {
                 var properties = new List<Property>();
                 Runtime.MeshPrimitive meshPrimitive = MeshPrimitive.CreateSinglePlane();
@@ -59,9 +61,45 @@ namespace AssetGenerator.ModelGroups
                     GLTF = gltf,
                 };
 
-                setPackGLBData(model);
+                model.ModelGroupsSignal = glbModelGroupSignal;
 
                 return model;
+            }
+
+            Assembly executingAssembly = Assembly.GetExecutingAssembly();
+            string executingAssemblyFolder = Path.GetDirectoryName(executingAssembly.Location);
+            char pathSeparator = Path.DirectorySeparatorChar;
+            string outputFolder = Path.GetFullPath(Path.Combine(executingAssemblyFolder, $"{string.Format(@"..{0}..{0}..{0}..{0}Output{0}Positive", pathSeparator)}"));
+            string outputFileFolder = Path.Combine(outputFolder, ModelGroupId.Binary.ToString());
+
+            void packAllBinaryData(glTFLoader.Schema.Gltf gltf)
+            {
+                string bufferUri = gltf.Buffers[0].Uri;
+                string outputPath = Path.Combine(outputFileFolder, Path.ChangeExtension(bufferUri, ".glb"));
+
+                glTFLoader.Interface.SaveBinaryModelPacked(gltf, outputPath, $"{outputFileFolder}{pathSeparator}");
+
+                // Binary file has been packed into .glb, delete it.
+                File.Delete(Path.Combine(outputFileFolder, bufferUri));
+            }
+
+            void packSomeBinaryData(glTFLoader.Schema.Gltf gltf)
+            {
+                string bufferUri = gltf.Buffers[0].Uri;
+                byte[] binaryBuffer = File.ReadAllBytes(Path.Combine(outputFileFolder, bufferUri));
+                string outputGLBPath = Path.Combine(outputFileFolder, Path.ChangeExtension(bufferUri, ".glb"));
+
+                gltf.Buffers[0].Uri = null;
+                glTFLoader.Interface.SaveBinaryModel(gltf, binaryBuffer, outputGLBPath);
+
+                // Binary file has been packed into .glb, delete it.
+                File.Delete(Path.Combine(outputFileFolder, bufferUri));
+            }
+
+            void packNoneBinaryData(glTFLoader.Schema.Gltf gltf)
+            {
+                string outputGLBPath = Path.Combine(outputFileFolder, Path.ChangeExtension(gltf.Buffers[0].Uri, ".glb"));
+                glTFLoader.Interface.SaveBinaryModel(gltf, null, outputGLBPath);
             }
 
             Models = new List<Model>
@@ -69,16 +107,15 @@ namespace AssetGenerator.ModelGroups
                 CreateModel((properties, node) =>
                 {
                     properties.Add(new Property(PropertyName.Description, "This GLB file is packed all resource data: BaseColor_A.png and .bin."));
-                }, (model) => { model.BinaryPacked = BinaryPackedType.GLBPacked_AllExternalData; }),
-
+                }, packAllBinaryData),
                 CreateModel((properties, node) =>
                 {
                     properties.Add(new Property(PropertyName.Description, "This GLB file is packed one resource data: .bin, and points to one external resource: BaseColor_A.png."));
-                }, (model) => { model.BinaryPacked = BinaryPackedType.GLBPacked_SomeExternalData; }),
+                }, packSomeBinaryData),
                 CreateModel((properties, node) =>
                 {
                     properties.Add(new Property(PropertyName.Description, "This GLB file is not packed any resource data, still points to external resource: BaseColor_A.png and .bin."));
-                }, (model) => { model.BinaryPacked = BinaryPackedType.GLBPacked_NoExternalData; })
+                }, packNoneBinaryData)
             };
 
             GenerateUsedPropertiesList();

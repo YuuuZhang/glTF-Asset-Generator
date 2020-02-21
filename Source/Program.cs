@@ -129,104 +129,36 @@ namespace AssetGenerator
                 {
                     var model = modelGroup.Models[comboIndex];
                     var filename = $"{modelGroup.Id}_{comboIndex:00}.gltf";
-                    glTFLoader.Schema.Gltf binaryPackedGltf = null;
-                    byte[] binaryPackedBuffer = null;
-                    void Convert(Func<BinaryDataType, BinaryData> getBinaryData)
+
+                    using (var binaryData = new BinaryData($"{modelGroup.Id}_{comboIndex:00}.bin"))
                     {
                         // Pass the desired properties to the runtime layer, which then coverts that data into
                         // a gltf loader object, ready to create the model.
-                        var converter = new Converter(getBinaryData, model.CreateSchemaInstance);
+                        var converter = new Converter(type => binaryData, model.CreateSchemaInstance);
                         glTFLoader.Schema.Gltf gltf = converter.Convert(model.GLTF);
 
                         // Makes last second changes to the model that bypass the runtime layer.
                         model.PostRuntimeChanges?.Invoke(gltf);
 
+                        // Create the .bin file and writes the model's data to it.
+                        string dataFile = Path.Combine(modelGroupFolder, binaryData.Name);
+                        File.WriteAllBytes(dataFile, binaryData.Bytes);
+
+                        // Makes changes to the model group.
+                        model.ModelGroupsSignal?.Invoke(gltf);
+
+                        // If there is no .glb file in the modelGroupFolder then
                         // Create the .gltf file and writes the model's data to it.
                         string assetFile = Path.Combine(modelGroupFolder, filename);
-                        if (model.BinaryPacked == BinaryPackedType.NoGLB || model.BinaryPacked == BinaryPackedType.GLBPacked_AllExternalData)
+
+                        if (Directory.GetFiles(modelGroupFolder, "*.glb").Length == 0)
                         {
                             glTFLoader.Interface.SaveModel(gltf, assetFile);
                         }
                         else
                         {
-                            // glTF model uses in packed all external resources to GLB file.
-                            binaryPackedGltf = gltf;
+                            filename = $"{modelGroup.Id}_{comboIndex:00}.glb";
                         }
-                    }
-
-                    void WriteBinaryDataFiles(params BinaryData[] bins)
-                    {
-                        foreach (var bin in bins)
-                        {
-                            // Write model data to the .bin file.
-                            File.WriteAllBytes(Path.Combine(modelGroupFolder, bin.Name), bin.Bytes);
-                        }
-                    }
-
-                    if (!model.SeparateBuffers)
-                    {
-                        using (var binaryData = new BinaryData($"{modelGroup.Id}_{comboIndex:00}.bin"))
-                        {
-                            Convert(type => binaryData);
-                            if (model.BinaryPacked != BinaryPackedType.GLBPacked_SomeExternalData)
-                            {
-                                WriteBinaryDataFiles(binaryData);
-                            }
-                            else
-                            {
-                                // Binary data uses in packed some external resources to GLB file.
-                                binaryPackedBuffer = binaryData.Bytes;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        using (var binaryData = new BinaryData($"{modelGroup.Id}_{comboIndex:00}.bin"))
-                        using (var binaryDataAnimation = new BinaryData($"{modelGroup.Id}_Animation_{comboIndex:00}.bin"))
-                        {
-                            Convert(type => type == BinaryDataType.Animation ? binaryDataAnimation : binaryData);
-                            WriteBinaryDataFiles(binaryData, binaryDataAnimation);
-                        }
-                    }
-
-                    if (model.BinaryPacked != BinaryPackedType.NoGLB)
-                    {
-                        string GLBFileName = $"{modelGroup.Id}_{comboIndex:00}.glb";
-                        string outputGlbFilePath = Path.Combine(modelGroupFolder, GLBFileName);
-
-                        if (model.BinaryPacked == BinaryPackedType.GLBPacked_AllExternalData)
-                        {
-                            string inputGltfFilePath = Path.Combine(modelGroupFolder, filename);
-                            // Packed all external resources into GLB file.
-                            glTFLoader.Interface.Pack(inputGltfFilePath, outputGlbFilePath);
-
-                            // Delete files that do not need to show out.
-                            File.Delete(inputGltfFilePath);
-                            File.Delete(Path.Combine(modelGroupFolder, ($"{modelGroup.Id}_{comboIndex:00}.bin")));
-                        }
-                        else
-                        {
-                            if (binaryPackedGltf.Buffers.Length == 1)
-                            {
-                                if (model.BinaryPacked == BinaryPackedType.GLBPacked_SomeExternalData)
-                                {
-                                    binaryPackedGltf.Buffers[0].Uri = null;
-                                    // GLB file points to external resources: image.
-                                    glTFLoader.Interface.SaveBinaryModel(binaryPackedGltf, binaryPackedBuffer, outputGlbFilePath);
-                                }
-                                if (model.BinaryPacked == BinaryPackedType.GLBPacked_NoExternalData)
-                                {
-                                    // GLB file points to external resources: .bin and image.
-                                    glTFLoader.Interface.SaveBinaryModel(binaryPackedGltf, null, outputGlbFilePath);
-                                }
-                            }
-                            else
-                            {
-                                throw new ArgumentNullException($"{nameof(binaryPackedGltf)} multiple binary buffer references found");
-                            }
-                        }
-                        // Make mainfest filename points to GLB file.
-                        filename = GLBFileName;
                     }
 
                     readme.SetupTable(modelGroup, comboIndex, model, Path.GetFileName(savePath));
