@@ -129,39 +129,54 @@ namespace AssetGenerator
                 {
                     var model = modelGroup.Models[comboIndex];
                     var filename = $"{modelGroup.Id}_{comboIndex:00}.gltf";
+                    var binaryData = new BinaryData($"{modelGroup.Id}_{comboIndex:00}.bin");
+                    List<BinaryData> binsData = new List<BinaryData>();
 
-                    using (var binaryData = new BinaryData($"{modelGroup.Id}_{comboIndex:00}.bin"))
+                    BinaryData CreatBinaryData(BinaryDataType type)
                     {
-                        // Pass the desired properties to the runtime layer, which then coverts that data into
-                        // a gltf loader object, ready to create the model.
-                        var converter = new Converter(type => binaryData, model.CreateSchemaInstance);
-                        glTFLoader.Schema.Gltf gltf = converter.Convert(model.GLTF);
+                        BinaryData createBinsData = model.CreateBinsData?.Invoke(type);
+                        BinaryData binData = createBinsData == null ? binaryData : createBinsData;
 
-                        // Makes last second changes to the model that bypass the runtime layer.
-                        model.PostRuntimeChanges?.Invoke(gltf);
-
-                        // Create the .bin file and writes the model's data to it.
-                        string dataFile = Path.Combine(modelGroupFolder, binaryData.Name);
-                        File.WriteAllBytes(dataFile, binaryData.Bytes);
-
-                        // Makes changes to the model group.
-                        model.ModelGroupsSignal?.Invoke(gltf);
-
-                        // If there is no .glb file in the modelGroupFolder then
-                        // Create the .gltf file and writes the model's data to it.
-                        string assetFile = Path.Combine(modelGroupFolder, filename);
-
-                        if (Directory.GetFiles(modelGroupFolder, "*.glb").Length == 0)
+                        if (!binsData.Contains(binData))
                         {
-                            glTFLoader.Interface.SaveModel(gltf, assetFile);
+                            binsData.Add(binData);
                         }
-                        else
-                        {
-                            filename = $"{modelGroup.Id}_{comboIndex:00}.glb";
-                        }
+
+                        return binData;
                     }
 
-                    readme.SetupTable(modelGroup, comboIndex, model, Path.GetFileName(savePath));
+                    // Pass the desired properties to the runtime layer, which then coverts that data into
+                    // a gltf loader object, ready to create the model.
+                    var converter = new Converter(type => CreatBinaryData(type), model.CreateSchemaInstance);
+                    glTFLoader.Schema.Gltf gltf = converter.Convert(model.GLTF);
+
+                    // Makes last second changes to the model that bypass the runtime layer.
+                    model.PostRuntimeChanges?.Invoke(gltf);
+
+                    // Create the .bin file and writes the model's data to it.
+                    foreach (var bins in binsData)
+                    {
+                        string dataFile = Path.Combine(modelGroupFolder, bins.Name);
+                        File.WriteAllBytes(dataFile, bins.Bytes);
+                    }
+
+                    // Makes changes to the model group.
+                    model.ModelGroupsSignal?.Invoke(gltf);
+
+                    // If there is no .glb file in the modelGroupFolder then
+                    // Create the .gltf file and writes the model's data to it.
+                    string assetFile = Path.Combine(modelGroupFolder, filename);
+
+                    if (Directory.GetFiles(modelGroupFolder, "*.glb").Length == 0)
+                    {
+                        glTFLoader.Interface.SaveModel(gltf, assetFile);
+                    }
+                    else
+                    {
+                        filename = $"{modelGroup.Id}_{comboIndex:00}.glb";
+                    }
+
+                    readme.SetupTable(modelGroup, comboIndex, model, Path.GetFileName(savePath), modelGroupFolder);
                     manifest.Models.Add(new Manifest.Model(filename, modelGroup.Id, modelGroup.NoSampleImages, model.Camera, model.Animated, model.Loadable));
                 }
 

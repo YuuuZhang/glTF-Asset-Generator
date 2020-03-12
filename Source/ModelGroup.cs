@@ -1,4 +1,5 @@
-﻿using AssetGenerator.Runtime;
+﻿using AssetGenerator.Conversion;
+using AssetGenerator.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -247,6 +248,7 @@ namespace AssetGenerator
         public bool Animated = false;
         public bool? Loadable = true;
         public Action<glTFLoader.Schema.Gltf> ModelGroupsSignal;
+        public Func<BinaryDataType, BinaryData> CreateBinsData;
 
         // Below two will delete later.
         public bool SeparateBuffers = false;

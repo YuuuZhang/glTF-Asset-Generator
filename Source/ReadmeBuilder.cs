@@ -131,7 +131,7 @@ namespace AssetGenerator
         /// <summary>
         /// Builds the strings used to make the main table for each model group's readme.
         /// </summary>
-        public void SetupTable(ModelGroup test, int modelIndex, Model model, string testType)
+        public void SetupTable(ModelGroup test, int modelIndex, Model model, string testType, string assetFolder)
         {
             var modelGroupName = test.Id.ToString();
             var modelNumber = modelIndex.ToString("D2");
@@ -142,7 +142,7 @@ namespace AssetGenerator
             var modelInfo = new List<string>
             {
                 // Displays the number of the model and is a link to the model.
-                model.BinaryPacked == BinaryPackedType.NoGLB ? $"[{modelNumber}]({modelName}.gltf)<br>[View]({liveURL})" : $"[{modelNumber}]({modelName}.glb)<br>[View]({liveURL})"
+                Directory.GetFiles(assetFolder, "*.glb").Length == 0 ? $"[{modelNumber}]({modelName}.gltf)<br>[View]({liveURL})" : $"[{modelNumber}]({modelName}.glb)<br>[View]({liveURL})"
             };
 
             if (test.NoSampleImages == false)

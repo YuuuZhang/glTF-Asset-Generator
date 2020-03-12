@@ -2,6 +2,7 @@ using System;
 using System.Numerics;
 using AssetGenerator.Runtime;
 using System.Collections.Generic;
+using AssetGenerator.Conversion;
 
 namespace AssetGenerator.ModelGroups
 {
@@ -11,7 +12,7 @@ namespace AssetGenerator.ModelGroups
 
         public Buffer_Misc(List<string> imageList)
         {
-            Model CreateModel(Action<List<Property>, AnimationChannel, Node> setProperties)
+            Model CreateModel(Action<List<Property>, AnimationChannel, Node> setProperties, Func<BinaryDataType, BinaryData> separateBuffers)
             {
                 var properties = new List<Property>();
 
@@ -53,13 +54,16 @@ namespace AssetGenerator.ModelGroups
                     }
                 };
 
-                return new Model
+                var model = new Model
                 {
                     Properties = properties,
                     GLTF = gltf,
                     Animated = true,
-                    SeparateBuffers = true,
                 };
+
+                model.CreateBinsData = separateBuffers;
+
+                return model;
             }
 
             void setTranslationChanneltarget(AnimationChannel channel, Node node)
@@ -91,6 +95,15 @@ namespace AssetGenerator.ModelGroups
                 };
             }
 
+            BinaryData separateBinaryData(BinaryDataType binaryDataType)
+            {
+                BinaryData geometryBinarydata = new BinaryData($"{ModelGroupId.Buffer_Misc}_00.bin");
+                BinaryData animationBinaryData = new BinaryData($"{ModelGroupId.Buffer_Misc}_Animation_00.bin");
+                BinaryData binaryData = binaryDataType == BinaryDataType.Animation ? animationBinaryData : geometryBinarydata;
+
+                return binaryData;
+            }
+
             Models = new List<Model>
             {
                 CreateModel((properties, channel, node) =>
@@ -98,7 +111,7 @@ namespace AssetGenerator.ModelGroups
                     setTranslationChanneltarget(channel, node);
                     SetLinearSamplerForTranslation(channel);
                     properties.Add(new Property(PropertyName.Description, "The mesh primitive and animation data are stored in separate buffers."));
-                })
+                }, separateBinaryData)
             };
 
             GenerateUsedPropertiesList();
